@@ -45,3 +45,4 @@
 #.mule/
 .DS_Store
 velocity.log
+/target/
