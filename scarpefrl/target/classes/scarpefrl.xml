@@ -179,6 +179,7 @@ data_max: payload.data_massima as LocalDateTime,
 stato_ord: payload.stato_ord
 }]]]></db:input-parameters>
 		</db:insert>
+		<logger level="INFO" doc:name="Logger" doc:id="479fbd12-5cbc-48f2-87e9-a8d561183ec9" message="#[testttttttt]"/>
     </flow>
     <flow name="post:\spedizioni:application\json:scarpefrl-config">
         <ee:transform doc:name="Transform Message">
