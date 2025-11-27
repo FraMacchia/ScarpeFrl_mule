@@ -1,0 +1,147 @@
+#%RAML 1.0
+types:
+  cliente:
+    example:
+      strict: true
+      value:
+        id: 1
+        nome: Pittarosso
+        mail: pittarosso@gmail.com
+        telefono: "3351267890"
+        indirizzo: Via indipendenza 13, Roma
+    properties:
+      id:
+        type: number
+        format: int
+      nome:
+        type: string
+      mail:
+        type: string
+      telefono:
+        type: string
+      indirizzo:
+        example: Example
+        type: string
+  ordine:
+    example:
+      strict: true
+      value:
+        id_ord: 62
+        id_cliente: 11
+        id_prod: 10
+        qta_ord: 1000
+        data_ordine: 2025-10-20T11:00:00+01:00
+        data_voluta: 2025-10-29T00:00:00+01:00
+        data_massima: 2026-01-31T15:45:00+01:00
+        stato_ord: creato
+    properties:
+      id_ord:
+        type: number
+        format: int
+      id_cliente:
+        type: number
+        format: int
+      id_prod:
+        type: number
+        format: int
+      qta_ord:
+        type: number
+        format: int
+      data_ordine:
+        type: string
+      data_voluta:
+        type: string
+      data_massima:
+        type: string
+      stato_ord:
+        type: string
+  spedizione:
+    example:
+      strict: true
+      value:
+        id_sped: s_001
+        id_ordine: 4875
+        stato_sped: In_ritiro
+        data_agg: 2025-11-05T10:30:00+01:00
+        data_consegna: 2025-11-06T00:00:00+01:00
+        note: in lavorazione
+    properties:
+      id_sped:
+        type: string
+      id_ordine:
+        type: number
+        format: int
+      stato_sped:
+        type: string
+      data_agg:
+        type: string
+      data_consegna?:
+        type: string
+      note?:
+        type: string
+  aggiornamento_sped:
+    example:
+      strict: true
+      value:
+        stato_sped: Ritiro
+        data_agg: 2025-10-27T23:00:00+01:00
+        data_consegna: 2025-10-11T00:00:00+02:00
+        note: la spedizione partirà a breve
+    properties:
+      stato_sped:
+        type: string
+      data_agg:
+        type: string
+      data_consegna?:
+        type: string
+      note?:
+        type: string
+title: ScarpeFrl
+/ordini:
+  post:
+    body:
+      application/json:
+        type: ordine
+    responses:
+      "200":
+        body:
+          application/json:
+            example: Ordine registrato correttamente
+            type: string
+/spedizioni:
+  post:
+    body:
+      application/json:
+        type: spedizione
+    responses:
+      "200":
+        body:
+          application/json:
+            example: Spedizione registrata
+            type: string
+/clienti/{id_cliente}:
+  get:
+    responses:
+      "200":
+        body:
+          application/json:
+            type: cliente
+  uriParameters:
+    id_cliente:
+      example: "6"
+      type: string
+/spedizioni/{id_sped}:
+  patch:
+    body:
+      application/json:
+        type: aggiornamento_sped
+    responses:
+      "200":
+        body:
+          application/json:
+            example: "\"Aggiornamento registrato\""
+            type: string
+  uriParameters:
+    id_sped:
+      example: s_001
+      type: string
