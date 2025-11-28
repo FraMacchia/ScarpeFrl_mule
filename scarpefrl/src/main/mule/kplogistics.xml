@@ -125,14 +125,24 @@ output application/json
     </flow>
     <flow name="get:\quote:kplogistics-config">
         <logger level="INFO" message="get:\quote:kplogistics-config" />
+		<ee:transform doc:name="Transform Message" doc:id="843ca1be-85ed-46d3-a112-3211d755d3cb" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var response = readUrl("classpath://Risposta_quote_KPLog.txt", "application/json")
+---
+response]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
     </flow>
     <flow name="post:\kpOrdini:application\json:kplogistics-config">
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
+var response = readUrl("classpath://Risposta_ordini_KPLog.txt", "application/json")
 ---
-"La spedizione è stata aggiunta" as String {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+response]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
