@@ -181,7 +181,6 @@ data_max: payload.data_massima as LocalDateTime,
 stato_ord: payload.stato_ord
 }]]]></db:input-parameters>
 		</db:insert>
-		<logger level="INFO" doc:name="Logger" doc:id="d951c625-62d8-4455-9a5d-0fada0fc3478" message="#[vars.dati_ordine]"/>
 		<set-payload value="#[&quot;L'ordine &quot; ++ payload.id_ord as String ++ &quot; è stato registrato correttamente nel database.&quot;]" doc:name="response_200" doc:id="37a58b7f-f8c2-44ef-9971-230330115eab" />
     </flow>
     <flow name="validazione_ordine" doc:id="c89f88c0-3508-4fb8-b05b-690052ab2ead" >
@@ -227,7 +226,6 @@ stato_ord: payload.stato_ord
 				<fixed-frequency frequency="10" timeUnit="SECONDS" />
 			</scheduling-strategy>
 		</db:listener>
-		<logger level="INFO" doc:name="Logger" doc:id="9828e766-4f8c-4fc5-84fb-8d600f065693" message="#[payload]"/>
 	</flow>
 	<flow name="post:\spedizioni:application\json:scarpefrl-config">
         <ee:transform doc:name="Transform Message">

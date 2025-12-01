@@ -226,7 +226,6 @@ stato_ord: payload.stato_ord
 				<fixed-frequency frequency="10" timeUnit="SECONDS" />
 			</scheduling-strategy>
 		</db:listener>
-		<logger level="INFO" doc:name="Logger" doc:id="9828e766-4f8c-4fc5-84fb-8d600f065693" message="#[payload]"/>
 	</flow>
 	<flow name="post:\spedizioni:application\json:scarpefrl-config">
         <ee:transform doc:name="Transform Message">
