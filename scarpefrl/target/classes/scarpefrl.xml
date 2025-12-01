@@ -129,7 +129,8 @@ output application/json
         </error-handler>
     </flow>
     <flow name="patch:\spedizioni\(id_sped):application\json:scarpefrl-config">
-        <ee:transform doc:name="Transform Message">
+        <logger level="INFO" doc:name="Logger" doc:id="fca48d83-8030-454f-9bd9-845a927d1564" message="ciao"/>
+		<ee:transform doc:name="Transform Message">
             <ee:variables>
                 <ee:set-variable variableName="id_sped">attributes.uriParams.'id_sped'</ee:set-variable>
             </ee:variables>
