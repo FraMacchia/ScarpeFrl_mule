@@ -1,0 +1,84 @@
+#%RAML 1.0
+title: KPLogistics
+version: v1
+/quote:
+  get:
+    queryParameters:
+      id_ordine:
+        example: 123
+        type: number
+        format: int
+      peso:
+        example: 1000
+        type: number
+        format: int
+      origine:
+        example: Pechino
+        type: string
+      destinazione:
+        example: Londra
+        type: string
+      data_ordine:
+        example: 2025-10-20T11:00:00+01:00
+        type: string
+      data_voluta:
+        example: 2025-10-29T00:00:00+01:00
+        type: string
+      data_massima:
+        example: 2026-01-31T15:45:00+01:00
+        type: string
+    responses:
+      "200":
+        body:
+          application/json:
+            type: preventivo
+types:
+  preventivo:
+    properties:
+      id_ordine:
+        example: "123"
+        type: string
+      id_preventivo:
+        example: S_20250101
+        type: string
+      opzioni:
+        items:
+          properties:
+            id_opzione:
+              example: "1"
+              type: string
+            modalità:
+              example: Rail
+              type: string
+            prezzo:
+              example: 100
+              type: number
+              format: int
+            data_consegna:
+              example: 2025-11-13T12:00:00
+              type: string
+            durata_ore:
+              example: Example
+              type: string
+  request_ordini:
+    properties:
+      idPreventivo:
+        example: S-2025-11-03
+        type: string
+      opzioneId:
+        example: "1"
+        type: string
+      idCliente:
+        example: "6"
+        type: string
+/kpOrdini:
+  post:
+    body:
+      application/json:
+        type: request_ordini
+    responses:
+      "200":
+        body:
+          application/json:
+            example: La spedizione è stata aggiunta
+            type: string

@@ -1,0 +1,14 @@
+%dw 2.0
+
+type auto_c89f88c0_3508_4fb8_b05b_690052ab2ead_Input_Payload = {
+  stato_ord: String, 
+  id_cliente: Number, 
+  qta_ord: Number, 
+  id_ord: Number, 
+  id_prod: Number, 
+  data_ordine: String, 
+  data_voluta: String, 
+  data_massima: String, 
+  _?: Any
+}
+

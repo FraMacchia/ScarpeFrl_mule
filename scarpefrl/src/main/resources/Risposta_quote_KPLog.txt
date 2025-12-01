@@ -1,0 +1,27 @@
+{
+    "id_ordine": "1335",
+    "id_preventivo": "S-2025-11-03",
+    "opzione": [
+        {
+            "id_opzione": "1",
+            "modalità": "Rail",
+            "prezzo": 6120,
+            "data_consegna": "2025-11-13T12:00:00",
+            "durata_ore": 34
+        },
+        {
+            "id_opzione": "2",
+            "modalità": "Heavy",
+            "prezzo": 19720,
+            "data_consegna": "2025-11-13T12:00:00",
+            "durata_ore": 34
+        },
+        {
+            "id_opzione": "3",
+            "modalità": "Air",
+            "prezzo": 13940,
+            "data_consegna": "2025-11-13T12:00:00",
+            "durata_ore": 34
+        }
+    ]
+}
