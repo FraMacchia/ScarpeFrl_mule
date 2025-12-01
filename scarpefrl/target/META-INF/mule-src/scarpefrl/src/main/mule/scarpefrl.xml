@@ -166,8 +166,8 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="post:\ordini:application\json:scarpefrl-config">
-		<flow-ref doc:name="Flow Reference" doc:id="d3eca3e1-7b7e-491f-b507-8f979a67e0da" name="validazione_ordine"/>
-		<db:insert doc:name="Insert" doc:id="1e803853-b470-4099-8432-1e3a90e10424" config-ref="Database_Config">
+		<flow-ref doc:name="Flow Reference" doc:id="d3eca3e1-7b7e-491f-b507-8f979a67e0da" name="validazione_ordine" target="output_flow_reference"/>
+		<db:insert doc:name="Insert" doc:id="1e803853-b470-4099-8432-1e3a90e10424" config-ref="Database_Config" target="output_insert">
 			<db:sql ><![CDATA[
 INSERT INTO scarpe.ordini(id_ord, id_cliente, id_prod, qta_ord, data_ord, data_vol, data_max, stato_ord)
 VALUES (:id_ord, :id_cliente, :id_prod, :qta_ord, :data_ord, :data_vol, :data_max, :stato_ord)]]></db:sql>
@@ -181,44 +181,53 @@ data_max: payload.data_massima as LocalDateTime,
 stato_ord: payload.stato_ord
 }]]]></db:input-parameters>
 		</db:insert>
-		<logger level="INFO" doc:name="Logger" doc:id="479fbd12-5cbc-48f2-87e9-a8d561183ec9" message="#[testttttttt]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="d951c625-62d8-4455-9a5d-0fada0fc3478" message="#[vars.dati_ordine]"/>
+		<set-payload value="#[&quot;L'ordine &quot; ++ payload.id_ord as String ++ &quot; è stato registrato correttamente nel database.&quot;]" doc:name="response_200" doc:id="37a58b7f-f8c2-44ef-9971-230330115eab" />
     </flow>
     <flow name="validazione_ordine" doc:id="c89f88c0-3508-4fb8-b05b-690052ab2ead" >
-		<set-variable value="#[payload]" doc:name="dati_ordine" doc:id="3ed973d7-aa53-4eb6-9404-78088d3557b6" variableName="dati_ordine"/>
-		<db:select doc:name="controllo_IDordine" doc:id="ebda3ad7-f74d-4d21-8877-f4a4012e5e41" config-ref="Database_Config">
+		<set-variable value="#[payload]" doc:name="dati_ordine" doc:id="0aa86ca4-1859-4ca2-98b7-85f2029bee39" variableName="dati_ordine"/>
+		<db:select doc:name="controllo_IDordine" doc:id="ebda3ad7-f74d-4d21-8877-f4a4012e5e41" config-ref="Database_Config" target="id_ord">
 			<db:sql ><![CDATA[SELECT id_ord FROM scarpe.ordini WHERE id_ord = :id]]></db:sql>
 			<db:input-parameters ><![CDATA[#[id: payload.id_ord]]]></db:input-parameters>
 		</db:select>
-		<validation:is-empty-collection doc:name="Is empty collection" doc:id="9b867585-5d21-405c-afc2-b294652aac3b"/>
-		<db:select doc:name="controllo_IDcliente" doc:id="29f4245f-883c-4730-b6f1-dced764af832" config-ref="Database_Config">
+		<validation:is-empty-collection doc:name="Is empty collection" doc:id="9b867585-5d21-405c-afc2-b294652aac3b" values="#[vars.id_ord]"/>
+		<db:select doc:name="controllo_IDcliente" doc:id="29f4245f-883c-4730-b6f1-dced764af832" config-ref="Database_Config" target="id_cliente">
 			<db:sql ><![CDATA[SELECT id_cliente FROM scarpe.clienti WHERE id_cliente = :id]]></db:sql>
-			<db:input-parameters ><![CDATA[#[id: vars.dati_ordine.id_cliente]]]></db:input-parameters>
+			<db:input-parameters ><![CDATA[#[id: payload.id_cliente]]]></db:input-parameters>
 		</db:select>
 		<set-variable value="#['errore_IDcliente']" doc:name="check_errore" doc:id="fd2bc1f4-bf68-4f30-a8e1-bc79ecf6da41" variableName="check_errore"/>
-		<validation:is-not-empty-collection doc:name="Is not empty collection" doc:id="600a8d8a-69e1-44df-9c99-0a4767c7a7f3" message="#['errore_IDcliente']"/>
-		<db:select doc:name="controllo_IDprodotto" doc:id="ee8abb7a-b86a-4ea9-b3ee-387873e3942a" config-ref="Database_Config">
+		<validation:is-not-empty-collection doc:name="Is not empty collection" doc:id="600a8d8a-69e1-44df-9c99-0a4767c7a7f3" message="#['errore_IDcliente']" values="#[vars.id_cliente]"/>
+		<db:select doc:name="controllo_IDprodotto" doc:id="ee8abb7a-b86a-4ea9-b3ee-387873e3942a" config-ref="Database_Config" target="id_prod">
 			<db:sql ><![CDATA[SELECT id_prod FROM scarpe.prodotti WHERE id_prod = :id]]></db:sql>
-			<db:input-parameters ><![CDATA[#[id: vars.dati_ordine.id_prod]]]></db:input-parameters>
+			<db:input-parameters ><![CDATA[#[id: payload.id_prod]]]></db:input-parameters>
 		</db:select>
 		<set-variable value="#['errore_IDprod']" doc:name="check_errore" doc:id="451f23eb-33f1-4ca5-9000-3d87141c1897" variableName="check_errore"/>
-		<validation:is-not-empty-collection doc:name="Is not empty collection" doc:id="cd428792-a862-429f-9e64-c5abfa6ee42f" message="#['errore_IDprod']"/>
+		<validation:is-not-empty-collection doc:name="Is not empty collection" doc:id="cd428792-a862-429f-9e64-c5abfa6ee42f" message="#['errore_IDprod']" values="#[vars.id_prod]"/>
 		<error-handler >
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="60ea6f76-a6e3-4606-9a27-34919b665462" type="VALIDATION:NOT_EMPTY_COLLECTION" >
-				<set-variable value="400" doc:name="Set Variable" doc:id="756347d4-c226-4bbe-a72d-fe288a27c99e" variableName="httpStatus" />
-				<set-payload value="#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  Errore: &quot;L'id è già presente sul database.&quot; &#10;}]" doc:name="Set Payload" doc:id="77ca60b3-18ea-4304-8fc5-3c14a803adb3" />
+				<set-variable value="400" doc:name="httpStatus_400" doc:id="756347d4-c226-4bbe-a72d-fe288a27c99e" variableName="httpStatus" />
+				<set-payload value="#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  Errore: &quot;L'id &quot; ++ vars.dati_ordine.id_ord as String ++ &quot; è già presente sul database.&quot; &#10;}]" doc:name="Set Payload" doc:id="77ca60b3-18ea-4304-8fc5-3c14a803adb3" />
 			</on-error-propagate>
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="834d4198-63ab-4b91-bf86-b030dc7928b2" type="VALIDATION:EMPTY_COLLECTION">
-				<set-variable value="404" doc:name="Set Variable" doc:id="a13d5f35-b239-45a2-9ff7-ddcb8f308a13" variableName="httpStatus" />
+				<set-variable value="404" doc:name="httpStatus_404" doc:id="a13d5f35-b239-45a2-9ff7-ddcb8f308a13" variableName="httpStatus" />
 				<choice doc:name="Choice" doc:id="733ebf80-3056-4cce-8c9a-bd5a98cec0e9" >
 					<when expression="#[error.description == 'errore_IDcliente']">
-						<set-payload value="#['Il cliente non è registrato nel database']" doc:name="Set Payload" doc:id="b4420954-1ad3-4183-873c-99891995a9c8" />
+						<set-payload value="#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  Errore: &quot;L'id_cliente &quot; ++ vars.dati_ordine.id_cliente as String ++ &quot; non è presente sul database.&quot; &#10;}]" doc:name="Set Payload" doc:id="b4420954-1ad3-4183-873c-99891995a9c8" />
 					</when>
 					<when expression="#[error.description == 'errore_IDprod']">
-						<set-payload value="#['Il prdotto non è registrato nel datanase']" doc:name="Set Payload" doc:id="cf3dac3b-3bdf-4707-bda9-77440930cf84" />
+						<set-payload value="#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  Errore: &quot;L'id_prod &quot; ++ vars.dati_ordine.id_prod as String ++ &quot; non è presente sul database.&quot; &#10;}]" doc:name="Set Payload" doc:id="cf3dac3b-3bdf-4707-bda9-77440930cf84" />
 					</when>
 				</choice>
 			</on-error-propagate>
 		</error-handler>
+	</flow>
+	<flow name="sottoscrizione" doc:id="3ca74b93-a5bb-44cb-abeb-87cc72631fb9" >
+		<db:listener table="scarpe.ordini" doc:name="On Table Row" doc:id="e8f52372-0cb6-4990-85dc-95710800d1e3" config-ref="Database_Config" watermarkColumn="id_ord">
+			<scheduling-strategy >
+				<fixed-frequency frequency="10" timeUnit="SECONDS" />
+			</scheduling-strategy>
+		</db:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="9828e766-4f8c-4fc5-84fb-8d600f065693" message="#[payload]"/>
 	</flow>
 	<flow name="post:\spedizioni:application\json:scarpefrl-config">
         <ee:transform doc:name="Transform Message">
